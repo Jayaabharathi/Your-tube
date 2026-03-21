@@ -18,7 +18,7 @@ const Page = () => {
   const id = params?.id as string;
   const router = useRouter();
 
-  const { user } = useUser();
+  const { user, login } = useUser() as any;
 
   const [video, setVideo] = useState<any>(null);
   const [allVideos, setAllVideos] = useState<any[]>([]);
@@ -92,6 +92,9 @@ const Page = () => {
             }
           );
 
+          // Force local storage session update so the badge persists post-reload
+          if (login) login({ ...user, isPremium: true, planType: planType });
+          
           alert(`Premium Activated 🎉\nEnjoy your ${planType} plan!`);
           window.location.reload();
         },
