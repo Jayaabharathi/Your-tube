@@ -119,13 +119,24 @@ const VideoInfo = ({ video }: any) => {
       alert("Login required");
       return;
     }
+    
+    // 🔥 MOBILE FIX: Open the window synchronously BEFORE the await!
+    // Mobile browsers (Safari/Chrome) immediately block window.open if it happens asynchronously.
+    const downloadTab = window.open("", "_blank");
+    if (!downloadTab) {
+      alert("Please allow popups to download videos.");
+      return;
+    }
+
     try {
       const res = await axiosInstance.post("/download", {
         userid: user._id,
         videoid: video._id,
       });
-      window.open(res.data.videourl, "_blank");
+      // Redirect the legally opened tab to the video URL
+      downloadTab.location.href = res.data.videourl;
     } catch (error: any) {
+      downloadTab.close();
       alert(error?.response?.data || "Download limit reached. Upgrade to premium");
     }
   };
