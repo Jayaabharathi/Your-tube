@@ -24,8 +24,16 @@ function ThumbnailVideo({ src }: { src: string }) {
     if (!el) return;
 
     const onMeta = () => {
-      // Seek to 2 seconds (or 10% of duration, whichever is smaller)
-      el.currentTime = Math.min(2, el.duration * 0.1 || 2);
+      // Create a predictable unique number from the filename to pick a unique frame for each video
+      let hash = 0;
+      for (let i = 0; i < src.length; i++) {
+        hash = src.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const randomPercent = Math.abs(hash) % 100 / 100; // 0.0 to 0.99
+      
+      // Seek somewhere between 5% and 80% of the video duration based on the unique hash
+      const targetTime = el.duration * (0.05 + Math.min(randomPercent, 0.75));
+      el.currentTime = targetTime || 1;
     };
 
     const onSeeked = () => setFrameReady(true);

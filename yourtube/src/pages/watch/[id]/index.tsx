@@ -121,15 +121,16 @@ const Page = () => {
         strategy="lazyOnload"
       />
 
-      <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="max-w-7xl mx-auto md:px-4 py-4">
         <div className="flex flex-col lg:flex-row gap-6">
 
           {/* LEFT SIDE */}
-          <div className="w-full lg:w-2/3 space-y-4">
+          <div className="w-full lg:w-2/3 md:space-y-4">
             <Videopplayer video={video} onNextVideo={handleNextVideo} />
-            <VideoInfo video={video} />
+            <div className="px-4 md:px-0 space-y-4 pt-4 md:pt-0">
+              <VideoInfo video={video} />
 
-            {/* Upgrade Plans */}
+              {/* Upgrade Plans */}
             {user && (!user.planType || user.planType !== "Gold") && (
               <div className="bg-secondary/10 p-4 md:p-6 rounded-2xl mb-4 border border-border shadow-inner">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -172,10 +173,11 @@ const Page = () => {
             <div id="comments-section">
               <Comments videoId={id} />
             </div>
+            </div>
           </div>
 
           {/* RIGHT SIDE */}
-          <div className="w-full lg:w-1/3">
+          <div className="w-full lg:w-1/3 px-4 md:px-0">
             <RelatedVideos videos={allVideos} />
           </div>
 

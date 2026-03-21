@@ -1,4 +1,4 @@
-import { Bell, Menu, Mic, Search, User, VideoIcon } from "lucide-react";
+import { Bell, Menu, Mic, Search, User, VideoIcon, ArrowLeft } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -19,8 +19,9 @@ import axiosInstance from "@/lib/axiosinstance";
 import { useEffect } from "react";
 
 const Header = () => {
-  const { user, logout } = useUser() as any;
+  const { user, login, logout } = useUser() as any;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -57,8 +58,35 @@ const Header = () => {
       handleSearch(e as any);
     }
   };
+  if (showMobileSearch) {
+    return (
+      <header className="flex items-center w-full px-2 py-2 bg-background border-b transition-colors duration-500 h-[60px]">
+        <Button variant="ghost" size="icon" onClick={() => setShowMobileSearch(false)} className="mr-2 flex-shrink-0">
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <form onSubmit={handleSearch} className="flex flex-1 items-center bg-secondary rounded-full border border-border overflow-hidden">
+          <Input
+            type="search"
+            placeholder="Search YourTube"
+            value={searchQuery}
+            onKeyPress={handleKeypress}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 bg-transparent border-0 focus-visible:ring-0 text-foreground px-4 h-10"
+            autoFocus
+          />
+          <Button type="submit" variant="ghost" className="rounded-r-full px-4 h-10 hover:bg-transparent">
+            <Search className="w-5 h-5" />
+          </Button>
+        </form>
+        <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0 ml-2 bg-secondary hidden sm:flex">
+          <Mic className="w-5 h-5" />
+        </Button>
+      </header>
+    );
+  }
+
   return (
-    <header className="flex items-center justify-between px-4 py-2 bg-background border-b transition-colors duration-500">
+    <header className="flex items-center justify-between px-2 sm:px-4 py-2 bg-background border-b transition-colors duration-500 h-[60px]">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon">
           <Menu className="w-6 h-6" />
@@ -104,7 +132,10 @@ const Header = () => {
           <Mic className="w-5 h-5" />
         </Button>
       </form>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
+        <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setShowMobileSearch(true)}>
+          <Search className="w-5 h-5" />
+        </Button>
         {user ? (
           <>
             <Button variant="ghost" size="icon">

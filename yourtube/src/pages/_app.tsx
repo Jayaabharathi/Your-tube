@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import BottomNav from "@/components/BottomNav";
 import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
@@ -91,10 +92,13 @@ export default function App({ Component, pageProps }: AppProps) {
           strategy="beforeInteractive"
         />
         <Toaster />
-        <div className="flex">
+        <div className="flex pb-14 md:pb-0">
           <Sidebar />
-          <Component {...pageProps} />
+          <div className="flex-1 w-full overflow-x-hidden">
+            <Component {...pageProps} />
+          </div>
         </div>
+        <BottomNav />
         <VideoCall />
       </div>
     </UserProvider>

@@ -71,7 +71,8 @@ app.use((err, req, res, next) => {
 
 
 const PORT = process.env.PORT || 5000;
-const DBURL = "mongodb://127.0.0.1:27017/youtubeDB";
+const DBURL = process.env.MONGO_URI;
+
 
 const server = http.createServer(app);
 const io = new Server(server, {
