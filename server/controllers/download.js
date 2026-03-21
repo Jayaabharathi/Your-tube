@@ -32,7 +32,7 @@ export const downloadVideo = async (req, res) => {
       });
 
       return res.status(200).json({
-        videourl: `http://localhost:5000/${video.filepath.replace(/\\/g, "/")}`,
+        videourl: `${process.env.RENDER_EXTERNAL_URL || "http://localhost:5000"}/${video.filepath.replace(/\\/g, "/")}`,
         message: "Premium download allowed",
       });
     }
@@ -68,7 +68,7 @@ export const downloadVideo = async (req, res) => {
     await user.save();
 
     res.status(200).json({
-      videourl: `http://localhost:5000/${video.filepath.replace(/\\/g, "/")}`,
+      videourl: `${process.env.RENDER_EXTERNAL_URL || "http://localhost:5000"}/${video.filepath.replace(/\\/g, "/")}`,
       message: "Download allowed",
     });
 
