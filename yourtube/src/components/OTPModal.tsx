@@ -43,8 +43,8 @@ export default function OTPModal({ isOpen, onClose }: { isOpen: boolean; onClose
          mobileNumber: !isSouthIndia ? inputVal : undefined,
        });
        setStep(2);
-    } catch(err) {
-       alert("Network exception occurred bridging the OTP dispatch loop.");
+    } catch(err: any) {
+       alert("Network exception: " + (err.response?.data?.detail || err.response?.data?.message || err.message || "Unknown error"));
     } finally {
        setLoading(false);
     }
