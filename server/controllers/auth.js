@@ -139,7 +139,7 @@ export const sendOTP = async (req, res) => {
     }
   } catch (error) {
     console.error("sendOTP Error:", error);
-    res.status(500).json({ message: "Internal server error occurred while sending OTP" });
+    res.status(500).json({ message: "Internal server error occurred while sending OTP", detail: error.stack || error.message || error.toString() });
   }
 };
 
