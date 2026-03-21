@@ -27,15 +27,13 @@ const Header = () => {
   useEffect(() => {
     const checkConnection = async () => {
         try {
-            await axiosInstance.get("/video/getall");
+            await axiosInstance.get("/");
             setIsBackendConnected(true);
         } catch (err) {
             setIsBackendConnected(false);
         }
     };
     checkConnection();
-    const interval = setInterval(checkConnection, 10000); // Check every 10s
-    return () => clearInterval(interval);
   }, []);
 
   // const user: any = {
