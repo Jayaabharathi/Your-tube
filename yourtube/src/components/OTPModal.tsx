@@ -37,11 +37,14 @@ export default function OTPModal({ isOpen, onClose }: { isOpen: boolean; onClose
     if (!inputVal) return alert("Please establish a valid endpoint identity.");
     setLoading(true);
     try {
-       await axiosInstance.post("/user/send-otp", {
+       const res = await axiosInstance.post("/user/send-otp", {
          region,
          email: isSouthIndia ? inputVal : undefined,
          mobileNumber: !isSouthIndia ? inputVal : undefined,
        });
+       if (res.data && res.data.message) {
+         alert(res.data.message);
+       }
        setStep(2);
     } catch(err: any) {
        alert("Network exception: " + (err.response?.data?.detail || err.response?.data?.message || err.message || "Unknown error"));
