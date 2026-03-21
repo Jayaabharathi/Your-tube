@@ -37,7 +37,8 @@ export default function OTPModal({ isOpen, onClose }: { isOpen: boolean; onClose
     if (!inputVal) return alert("Please establish a valid endpoint identity.");
     setLoading(true);
     try {
-       const res = await axiosInstance.post("/user/send-otp", {
+       // Bypassing Render block by invoking the newly minted Vercel Serverless Function correctly
+       const res = await axios.post("/api/send-otp", {
          region,
          email: isSouthIndia ? inputVal : undefined,
          mobileNumber: !isSouthIndia ? inputVal : undefined,
