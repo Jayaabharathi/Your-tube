@@ -113,10 +113,12 @@ mongoose
   .connect(DBURL)
   .then(() => {
     console.log("✅ MongoDB connected");
-    server.listen(PORT, () => {
-      console.log(`🚀 Server & VoIP running on port ${PORT}`);
-    });
   })
   .catch((error) => {
     console.error("❌ MongoDB connection failed:", error.message);
   });
+
+// Start listening immediately so Render detects the port
+server.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server & VoIP running on port ${PORT}`);
+});
