@@ -57,61 +57,45 @@ export const verifyPayment = async (req, res) => {
     }
     await user.save();
 
-    // 📧 SEND EMAIL NOTIFICATION
-    try {
-      let transporter;
+    // 📧 SEND EMAIL NOTIFICATION IN BACKGROUND (Fire & Forget)
+    // This prevents the user from waiting 60s for Render's firewall to block the email
+    (async () => {
+      try {
+        let transporter;
 
-      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        // 🟢 REAL GMAIL SMTP
-        transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
+        if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+          transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+            tls: { rejectUnauthorized: false },
+          });
+        } else {
+          const testAccount = await nodemailer.createTestAccount();
+          transporter = nodemailer.createTransport({
+            host: "smtp.ethereal.email", port: 587, secure: false,
+            auth: { user: testAccount.user, pass: testAccount.pass },
+            tls: { rejectUnauthorized: false },
+          });
+        }
+
+        const info = await transporter.sendMail({
+          from: `"YourTube Premium" <${process.env.EMAIL_USER || "billing@yourtube.com"}>`,
+          to: user.email, 
+          subject: "Your Subscription Invoice", 
+          text: `Hello ${user.name},\n\nYour payment of ₹${amount || 199} was successful!\nYou are now upgraded to the ${planType || "Premium"} plan.\n\nThank you for choosing YourTube!`, 
         });
-      } else {
-        // 🟠 MOCK ETHEREAL FALLBACK
-        const testAccount = await nodemailer.createTestAccount();
-        transporter = nodemailer.createTransport({
-          host: "smtp.ethereal.email",
-          port: 587,
-          secure: false, // true for 465, false for other ports
-          auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
-        });
+
+      } catch (emailErr) {
+        console.error("Invoice Email sending blocked by Host firewall:", emailErr.message);
       }
+    })();
 
-      const info = await transporter.sendMail({
-        from: `"YourTube Premium" <${process.env.EMAIL_USER || "billing@yourtube.com"}>`,
-        to: user.email, 
-        subject: "Your Subscription Invoice", 
-        text: `Hello ${user.name},\n\nYour payment of ₹${amount || 199} was successful!\nYou are now upgraded to the ${planType || "Premium"} plan.\n\nThank you for choosing YourTube!`, 
-      });
-
-      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        console.log(`✅ Real Invoice email successfully sent to ${user.email} from ${process.env.EMAIL_USER}`);
-      } else {
-        console.log("Mock Invoice email sent. Preview URL: " + nodemailer.getTestMessageUrl(info));
-      }
-    } catch (emailErr) {
-      console.error("Email sending failed:", emailErr);
-    }
-
-    res.status(200).json({
+    return res.status(200).json({
       message: `Payment verified. ${planType || "Premium"} activated!`,
     });
   } catch (error) {
     console.log("VERIFY ERROR:", error);
-    res.status(500).json({ message: "Payment verification failed" });
+    return res.status(500).json({ message: "Payment verification failed" });
   }
 };
 
