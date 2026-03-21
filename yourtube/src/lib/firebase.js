@@ -1,21 +1,27 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// src/lib/firebase.js
 
-// Your web app's Firebase configuration
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+
+// 🔹 Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCyxbdclt2ocA5zgE-MDy1ndYIFqVMAr30",
-  authDomain: "yourtube-8cda9.firebaseapp.com",
-  projectId: "yourtube-8cda9",
-  storageBucket: "yourtube-8cda9.firebasestorage.app",
-  messagingSenderId: "921641878423",
-  appId: "1:921641878423:web:0d65801eebaf2b25f03ad2",
+  apiKey: "AIzaSyBkQ-0eSn5r5lczqarL4a31Fm8pgt9QxMc",
+  authDomain: "your-tube-ba8ef.firebaseapp.com",
+  projectId: "your-tube-ba8ef",
+  storageBucket: "your-tube-ba8ef.appspot.com",
+  messagingSenderId: "676016909010",
+  appId: "1:676016909010:web:d5a1e895d519f8367a9b0b",
+  measurementId: "G-XJ5W23KL3L",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// ✅ Prevent Firebase re-initialization
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+
+// ✅ Auth ONLY runs in browser
+const auth = typeof window !== "undefined" ? getAuth(app) : null;
+
+// ✅ Google provider
 const provider = new GoogleAuthProvider();
+
 export { auth, provider };
+

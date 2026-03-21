@@ -12,6 +12,7 @@ const VideoUploader = ({ channelId, channelName }: any) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoTitle, setVideoTitle] = useState("");
+  const [videoDescription, setVideoDescription] = useState("");
   const [uploadComplete, setUploadComplete] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handlefilechange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +37,7 @@ const VideoUploader = ({ channelId, channelName }: any) => {
   const resetForm = () => {
     setVideoFile(null);
     setVideoTitle("");
+    setVideoDescription("");
     setIsUploading(false);
     setUploadProgress(0);
     setUploadComplete(false);
@@ -56,6 +58,7 @@ const VideoUploader = ({ channelId, channelName }: any) => {
     const formdata = new FormData();
     formdata.append("file", videoFile);
     formdata.append("videotitle", videoTitle);
+    formdata.append("description", videoDescription);
     formdata.append("videochanel", channelName);
     formdata.append("uploader", channelId);
     console.log(formdata)
@@ -83,16 +86,16 @@ const VideoUploader = ({ channelId, channelName }: any) => {
     }
   };
   return (
-    <div className="bg-gray-50 rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">Upload a video</h2>
+    <div className="bg-muted/50 rounded-lg p-6 border border-border">
+      <h2 className="text-xl font-semibold mb-4 text-foreground text-center">Upload a video</h2>
 
       <div className="space-y-4">
         {!videoFile ? (
           <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-100 transition-colors"
+            className="border-2 border-dashed border-muted-foreground/30 rounded-lg p-8 text-center cursor-pointer hover:bg-muted/80 transition-colors"
             onClick={() => fileInputRef.current?.click()}
           >
-            <Upload className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+            <Upload className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
             <p className="text-lg font-medium">
               Drag and drop video files to upload
             </p>
@@ -112,9 +115,9 @@ const VideoUploader = ({ channelId, channelName }: any) => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg border">
-              <div className="bg-blue-100 p-2 rounded-md">
-                <FileVideo className="w-6 h-6 text-blue-600" />
+            <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+              <div className="bg-red-900/20 p-2 rounded-md">
+                <FileVideo className="w-6 h-6 text-red-500" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{videoFile.name}</p>
@@ -136,14 +139,26 @@ const VideoUploader = ({ channelId, channelName }: any) => {
 
             <div className="space-y-3">
               <div>
-                <Label htmlFor="title">Title (required)</Label>
+                <Label htmlFor="title" className="text-foreground">Title (required)</Label>
                 <Input
                   id="title"
                   value={videoTitle}
                   onChange={(e) => setVideoTitle(e.target.value)}
                   placeholder="Add a title that describes your video"
                   disabled={isUploading || uploadComplete}
-                  className="mt-1"
+                  className="mt-1 bg-background border-border"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="description" className="text-foreground">Description / Caption</Label>
+                <textarea
+                  id="description"
+                  value={videoDescription}
+                  onChange={(e) => setVideoDescription(e.target.value)}
+                  placeholder="Add a description or caption for your video"
+                  disabled={isUploading || uploadComplete}
+                  className="mt-1 flex min-h-[80px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
             </div>

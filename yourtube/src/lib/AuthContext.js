@@ -38,6 +38,18 @@ export const UserProvider = ({ children }) => {
       console.error(error);
     }
   };
+
+  const refetchUser = async () => {
+    if (user?.email) {
+      try {
+        const response = await axiosInstance.post("/user/login", { email: user.email });
+        login(response.data.result);
+      } catch (err) {
+        console.error("Refetch user failed:", err);
+      }
+    }
+  };
+
   useEffect(() => {
     const unsubcribe = onAuthStateChanged(auth, async (firebaseuser) => {
       if (firebaseuser) {
@@ -59,7 +71,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, login, logout, handlegooglesignin }}>
+    <UserContext.Provider value={{ user, login, logout, handlegooglesignin, refetchUser }}>
       {children}
     </UserContext.Provider>
   );

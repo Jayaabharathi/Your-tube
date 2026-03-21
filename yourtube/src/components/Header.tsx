@@ -14,9 +14,29 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Channeldialogue from "./channeldialogue";
 import { useRouter } from "next/router";
 import { useUser } from "@/lib/AuthContext";
+import OTPModal from "./OTPModal";
+import axiosInstance from "@/lib/axiosinstance";
+import { useEffect } from "react";
 
 const Header = () => {
-  const { user, logout, handlegooglesignin } = useUser();
+  const { user, logout } = useUser() as any;
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isBackendConnected, setIsBackendConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+        try {
+            await axiosInstance.get("/video/getall");
+            setIsBackendConnected(true);
+        } catch (err) {
+            setIsBackendConnected(false);
+        }
+    };
+    checkConnection();
+    const interval = setInterval(checkConnection, 10000); // Check every 10s
+    return () => clearInterval(interval);
+  }, []);
+
   // const user: any = {
   //   id: "1",
   //   name: "John Doe",
@@ -38,7 +58,7 @@ const Header = () => {
     }
   };
   return (
-    <header className="flex items-center justify-between px-4 py-2 bg-white border-b">
+    <header className="flex items-center justify-between px-4 py-2 bg-background border-b transition-colors duration-500">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon">
           <Menu className="w-6 h-6" />
@@ -49,13 +69,20 @@ const Header = () => {
               <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
             </svg>
           </div>
-          <span className="text-xl font-medium">YourTube</span>
-          <span className="text-xs text-gray-400 ml-1">IN</span>
+          <span className="text-xl font-medium tracking-tighter">YourTube</span>
+          <div className="flex flex-col">
+            <span className="text-[10px] leading-none text-gray-400">IN</span>
+            <div 
+                className={`w-1.5 h-1.5 rounded-full mt-0.5 ${isBackendConnected === true ? "bg-green-500 shadow-[0_0_5px_#22c55e]" : isBackendConnected === false ? "bg-red-500 animate-pulse" : "bg-yellow-500"}`} 
+                title={isBackendConnected === true ? "Backend Connected" : isBackendConnected === false ? "Backend Offline / Blocked" : "Checking..."}
+            />
+          </div>
         </Link>
+
       </div>
       <form
         onSubmit={handleSearch}
-        className="flex items-center gap-2 flex-1 max-w-2xl mx-4"
+        className="hidden sm:flex items-center gap-2 flex-1 max-w-2xl mx-4"
       >
         <div className="flex flex-1">
           <Input
@@ -64,16 +91,16 @@ const Header = () => {
             value={searchQuery}
             onKeyPress={handleKeypress}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-l-full border-r-0 focus-visible:ring-0"
+            className="rounded-l-full border-r-0 focus-visible:ring-0 bg-background text-foreground"
           />
           <Button
             type="submit"
-            className="rounded-r-full px-6 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-l-0"
+            className="rounded-r-full px-6 bg-secondary hover:bg-secondary/80 text-foreground border border-l-0"
           >
             <Search className="w-5 h-5" />
           </Button>
         </div>
-        <Button variant="ghost" size="icon" className="rounded-full">
+        <Button variant="ghost" size="icon" className="rounded-full hidden md:flex">
           <Mic className="w-5 h-5" />
         </Button>
       </form>
@@ -133,7 +160,7 @@ const Header = () => {
           <>
             <Button
               className="flex items-center gap-2"
-              onClick={handlegooglesignin}
+              onClick={() => setIsAuthModalOpen(true)}
             >
               <User className="w-4 h-4" />
               Sign in
@@ -146,6 +173,7 @@ const Header = () => {
         onclose={() => setisdialogeopen(false)}
         mode="create"
       />
+      <OTPModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </header>
   );
 };

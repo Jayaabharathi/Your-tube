@@ -6,6 +6,7 @@ import {
   ThumbsUp,
   History,
   User,
+  Video
 } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -18,7 +19,7 @@ const Sidebar = () => {
 
   const [isdialogeopen, setisdialogeopen] = useState(false);
   return (
-    <aside className="w-64 bg-white  border-r min-h-screen p-2">
+    <aside className="hidden md:block w-64 bg-background border-r min-h-screen p-2 transition-colors duration-500">
       <nav className="space-y-1">
         <Link href="/">
           <Button variant="ghost" className="w-full justify-start">
@@ -38,6 +39,20 @@ const Sidebar = () => {
             Subscriptions
           </Button>
         </Link>
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start text-red-600 hover:text-red-700"
+          onClick={() => {
+            // This is a decorative trigger, the actual modal is toggled in VideoCall component
+            // We can dispatch a custom event or just let the floating button be the main way.
+            // For now, I'll make the floating button the main way via app state if needed.
+            // But let's just add a hint or simple trigger.
+            window.dispatchEvent(new CustomEvent('open-video-call'));
+          }}
+        >
+          <Video className="w-5 h-5 mr-3" />
+          Video Call (VoIP)
+        </Button>
 
         {user && (
           <>
@@ -61,7 +76,7 @@ const Sidebar = () => {
                 </Button>
               </Link>
               {user?.channelname ? (
-                <Link href={`/channel/${user.id}`}>
+                <Link href={`/channel/${user._id}`}>
                   <Button variant="ghost" className="w-full justify-start">
                     <User className="w-5 h-5 mr-3" />
                     Your channel

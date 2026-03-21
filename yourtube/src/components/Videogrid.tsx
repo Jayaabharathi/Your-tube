@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Videocard from "./videocard";
 import axiosInstance from "@/lib/axiosinstance";
 
-const Videogrid = () => {
+const Videogrid = ({ uploaderFilters }: { uploaderFilters?: string[] }) => {
   const [videos, setvideo] = useState<any>(null);
   const [loading, setloading] = useState(true);
   useEffect(() => {
@@ -48,13 +48,39 @@ const Videogrid = () => {
   //   },
   // ];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {loading ? (
-        <>Loading..</>
-      ) : (
-        videos.map((video: any) => <Videocard key={video._id} video={video} />)
-      )}
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  {loading ? (
+  <>Loading...</>
+) : (
+  Array.isArray(videos) &&
+  videos
+    .filter((v: any) => {
+      if (!uploaderFilters) return true;
+      return uploaderFilters.some((sub: any) => {
+        const subId = typeof sub === 'object' ? sub._id?.toString() : sub?.toString();
+        const subName = typeof sub === 'object' ? sub.name?.toLowerCase() : null;
+        const subChannelName = typeof sub === 'object' ? sub.channelname?.toLowerCase() : null;
+        
+        const videoUploader = v.uploader?.toString();
+        const videoChannel = v.videochanel?.toLowerCase();
+        
+        return subId === videoUploader || 
+               (videoUploader === "undefined" && (subName === videoChannel || subChannelName === videoChannel)) ||
+               (subName === videoChannel || subChannelName === videoChannel);
+      });
+    })
+    .map((video: any) => (
+      <Videocard key={video._id} video={video} />
+    ))
+)}
+{Array.isArray(videos) && videos.filter((v: any) => !uploaderFilters || uploaderFilters.includes(v.uploader)).length === 0 && !loading && (
+    <div className="col-span-full text-center py-20 text-muted-foreground">
+        No videos found. Try exploring new channels!
     </div>
+)}
+</div>
+
+
   );
 };
 

@@ -15,8 +15,12 @@ export const handlehistory = async (req, res) => {
 };
 export const handleview = async (req, res) => {
   const { videoId } = req.params;
+  if (!videoId || videoId === "undefined") {
+    return res.status(400).json({ message: "Invalid video ID provided" });
+  }
   try {
     await video.findByIdAndUpdate(videoId, { $inc: { views: 1 } });
+    return res.status(200).json({ message: "View updated" });
   } catch (error) {
     console.error(" error:", error);
     return res.status(500).json({ message: "Something went wrong" });
