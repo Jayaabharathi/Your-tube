@@ -93,7 +93,12 @@ const Page = () => {
           );
 
           // Force local storage session update so the badge persists post-reload
-          if (login) login({ ...user, isPremium: true, planType: planType });
+          if (login) {
+             const updatedUser = { ...user };
+             if (planType === "Premium") updatedUser.isPremium = true;
+             else updatedUser.planType = planType;
+             login(updatedUser);
+          }
           
           alert(`Premium Activated 🎉\nEnjoy your ${planType} plan!`);
           window.location.reload();

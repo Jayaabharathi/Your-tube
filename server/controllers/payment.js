@@ -51,10 +51,13 @@ export const verifyPayment = async (req, res) => {
     }
 
     const user = await User.findById(userId);
-    user.isPremium = true;
-    if (planType && ["Bronze", "Silver", "Gold"].includes(planType)) {
+    
+    if (planType === "Premium") {
+      user.isPremium = true;
+    } else if (planType && ["Bronze", "Silver", "Gold"].includes(planType)) {
       user.planType = planType;
     }
+    
     await user.save();
 
     // 📧 SEND EMAIL NOTIFICATION IN BACKGROUND (Fire & Forget)
