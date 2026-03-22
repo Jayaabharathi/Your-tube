@@ -133,6 +133,7 @@ const Page = () => {
             <div className="px-4 md:px-0 space-y-4 pt-4 md:pt-0">
               <VideoInfo video={video} />
 
+            {/* Download Premium Pass */}
             {user && !user.isPremium && (
               <div className="bg-secondary/10 p-4 md:p-6 rounded-2xl mb-4 border border-border shadow-inner">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -146,6 +147,44 @@ const Page = () => {
                             className="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg shadow-purple-600/20 px-6 py-5 text-sm"
                         >
                             Buy Premium ₹199
+                        </Button>
+                    </div>
+                </div>
+              </div>
+            )}
+
+            {/* Watch Time Tiers */}
+            {user && (!user.planType || user.planType !== "Gold") && (
+              <div className="bg-secondary/10 p-4 md:p-6 rounded-2xl mb-4 border border-border shadow-inner">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                        <h3 className="font-bold text-lg tracking-tight">Support this Creator</h3>
+                        <p className="text-xs text-muted-foreground">Upgrade your viewing limits with a creator tier subscription.</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {(!user.planType || user.planType === "Free") && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => handlePayment("Bronze", 10)}
+                            className="bg-[#CD7F32]/10 hover:bg-[#CD7F32] hover:text-white text-[#CD7F32] font-bold border border-[#CD7F32]/20 rounded-xl"
+                        >
+                            Bronze ₹10 (7m)
+                        </Button>
+                        )}
+                        {(!user.planType || ["Free", "Bronze"].find(p => p === user.planType)) && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => handlePayment("Silver", 50)}
+                            className="bg-slate-400/10 hover:bg-slate-400 hover:text-white text-slate-500 font-bold border border-slate-400/20 rounded-xl"
+                        >
+                            Silver ₹50 (10m)
+                        </Button>
+                        )}
+                        <Button
+                            onClick={() => handlePayment("Gold", 100)}
+                            className="bg-yellow-500 hover:bg-yellow-600 text-yellow-950 font-bold rounded-xl shadow-lg shadow-yellow-500/20"
+                        >
+                            Gold ₹100 (∞)
                         </Button>
                     </div>
                 </div>
