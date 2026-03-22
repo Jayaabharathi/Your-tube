@@ -356,8 +356,8 @@ export default function VideoCall() {
                     </div>
                 </div>
 
-                <div className="flex p-6 bg-secondary/10 items-center justify-center gap-2 md:gap-4 border-t border-border/50 overflow-x-auto">
-                    <div className="hidden md:flex flex-col mr-auto">
+                <div className="flex flex-col md:flex-row p-4 md:p-6 bg-secondary/10 items-center justify-center gap-4 border-t border-border/50">
+                    <div className="flex flex-col w-full md:w-auto md:mr-auto mb-2 md:mb-0 items-center md:items-start">
                         <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">In Room:</span>
                         <div className="flex items-center gap-2">
                             <span className="font-mono font-bold text-red-500">{roomId}</span>
@@ -366,39 +366,42 @@ export default function VideoCall() {
                             </Button>
                         </div>
                     </div>
-                    <Button 
-                        variant="ghost" 
-                        onClick={() => setIsMuted(!isMuted)} 
-                        className={`rounded-full w-10 h-10 md:w-12 md:h-12 flex-shrink-0 ${isMuted ? "bg-red-600/20 text-red-600" : "bg-white/10"}`}
-                    >
-                        {isMuted ? <MicOff className="w-4 h-4 md:w-6 md:h-6" /> : <Mic className="w-4 h-4 md:w-6 md:h-6" />}
-                    </Button>
-                    <Button 
-                        variant="ghost" 
-                        onClick={() => setIsVideoOff(!isVideoOff)} 
-                        className={`rounded-full w-10 h-10 md:w-12 md:h-12 flex-shrink-0 ${isVideoOff ? "bg-red-600/20 text-red-600" : "bg-white/10"}`}
-                    >
-                        {isVideoOff ? <VideoOff className="w-4 h-4 md:w-6 md:h-6" /> : <Video className="w-4 h-4 md:w-6 md:h-6" />}
-                    </Button>
-                    <Button 
-                        variant="secondary" 
-                        onClick={toggleScreenShare} 
-                        className="rounded-full w-10 h-10 md:w-12 md:h-12 bg-white/10 flex-shrink-0"
-                        title="Share YouTube Screen"
-                    >
-                        <MonitorUp className="w-4 h-4 md:w-6 md:h-6" />
-                    </Button>
-                    <Button 
-                        onClick={isRecording ? stopRecording : startRecording} 
-                        className={`rounded-full px-4 md:px-6 h-10 md:h-12 flex gap-1 md:gap-2 font-bold flex-shrink-0 ${isRecording ? "bg-red-600 animate-pulse" : "bg-white/10"}`}
-                    >
-                        {isRecording ? <Square fill="currentColor" className="w-3 h-3 md:w-4 md:h-4" /> : <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-600" />}
-                        <span className="text-[10px] md:text-sm">{isRecording ? "STOP" : "RECORD"}</span>
-                    </Button>
-                    <div className="h-8 w-[1px] bg-white/10 mx-1 md:mx-2 flex-shrink-0" />
-                    <Button onClick={endCall} className="rounded-full px-6 md:px-8 bg-red-600 hover:bg-red-700 h-10 md:h-12 font-bold flex-shrink-0">
-                        <span className="text-[10px] md:text-sm">END</span>
-                    </Button>
+                    
+                    <div className="flex items-center justify-center gap-2 md:gap-4 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+                        <Button 
+                            variant="ghost" 
+                            onClick={() => setIsMuted(!isMuted)} 
+                            className={`rounded-full w-10 h-10 md:w-12 md:h-12 flex-shrink-0 ${isMuted ? "bg-red-600/20 text-red-600" : "bg-white/10"}`}
+                        >
+                            {isMuted ? <MicOff className="w-4 h-4 md:w-6 md:h-6" /> : <Mic className="w-4 h-4 md:w-6 md:h-6" />}
+                        </Button>
+                        <Button 
+                            variant="ghost" 
+                            onClick={() => setIsVideoOff(!isVideoOff)} 
+                            className={`rounded-full w-10 h-10 md:w-12 md:h-12 flex-shrink-0 ${isVideoOff ? "bg-red-600/20 text-red-600" : "bg-white/10"}`}
+                        >
+                            {isVideoOff ? <VideoOff className="w-4 h-4 md:w-6 md:h-6" /> : <Video className="w-4 h-4 md:w-6 md:h-6" />}
+                        </Button>
+                        <Button 
+                            variant="secondary" 
+                            onClick={toggleScreenShare} 
+                            className="rounded-full w-10 h-10 md:w-12 md:h-12 bg-white/10 flex-shrink-0"
+                            title="Share YouTube Screen"
+                        >
+                            <MonitorUp className="w-4 h-4 md:w-6 md:h-6" />
+                        </Button>
+                        <Button 
+                            onClick={isRecording ? stopRecording : startRecording} 
+                            className={`rounded-full px-4 md:px-6 h-10 md:h-12 flex gap-1 md:gap-2 font-bold flex-shrink-0 ${isRecording ? "bg-red-600 animate-pulse" : "bg-white/10"}`}
+                        >
+                            {isRecording ? <Square fill="currentColor" className="w-3 h-3 md:w-4 md:h-4" /> : <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-600" />}
+                            <span className="text-[10px] md:text-sm">{isRecording ? "STOP" : "RECORD"}</span>
+                        </Button>
+                        <div className="h-8 w-[1px] bg-white/10 mx-1 md:mx-2 flex-shrink-0" />
+                        <Button onClick={endCall} className="rounded-full px-6 md:px-8 bg-red-600 hover:bg-red-700 h-10 md:h-12 font-bold flex-shrink-0">
+                            <span className="text-[10px] md:text-sm">END</span>
+                        </Button>
+                    </div>
                 </div>
               </div>
             )}
