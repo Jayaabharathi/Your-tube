@@ -59,29 +59,46 @@ export default function VideoCall() {
     socket.on("user-joined", async (id: string) => {
       console.log("User joined room:", id);
       setCallStatus("User Joined. Sending Offer...");
-      const offer = await peerRef.current?.createOffer();
-      await peerRef.current?.setLocalDescription(offer);
+      
+      // If the old connection died because they left earlier, respawn it!
+      let pc = peerRef.current;
+      if (!pc || pc.connectionState === "closed") {
+          pc = await initWebRTC();
+          if (localStream) {
+             localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+          }
+      }
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
       socket.emit("signal", { to: id, from: socket.id, signal: offer });
     });
 
     socket.on("signal", async ({ from, signal }: { from: string, signal: any }) => {
       if (from === socket.id) return;
-      if (!peerRef.current) return;
+      
+      // Safety net for answers if peerRef was destroyed
+      if (!peerRef.current || peerRef.current.connectionState === "closed") {
+          const pc = await initWebRTC();
+          if (localStream) {
+             localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+          }
+      }
 
       try {
         if (signal.type === "offer") {
           setCallStatus("Receiving Offer...");
-          await peerRef.current.setRemoteDescription(new RTCSessionDescription(signal));
-          const answer = await peerRef.current.createAnswer();
-          await peerRef.current.setLocalDescription(answer);
+          await peerRef.current!.setRemoteDescription(new RTCSessionDescription(signal));
+          const answer = await peerRef.current!.createAnswer();
+          await peerRef.current!.setLocalDescription(answer);
           socket.emit("signal", { to: from, from: socket.id, signal: answer });
           setCallStatus("Answer Sent");
         } else if (signal.type === "answer") {
           setCallStatus("Finalizing Connection...");
-          await peerRef.current.setRemoteDescription(new RTCSessionDescription(signal));
+          await peerRef.current!.setRemoteDescription(new RTCSessionDescription(signal));
         } else if (signal.candidate) {
-          if (peerRef.current.remoteDescription) {
-            await peerRef.current.addIceCandidate(new RTCIceCandidate(signal));
+          if (peerRef.current!.remoteDescription) {
+            await peerRef.current!.addIceCandidate(new RTCIceCandidate(signal));
           }
         }
       } catch (err) {
@@ -91,8 +108,14 @@ export default function VideoCall() {
 
     socket.on("user-left", (id: string) => {
       console.log("User left room:", id);
-      setCallStatus("Friend disconnected");
-      endCall();
+      setCallStatus("Friend left the room. Waiting for them to rejoin...");
+      setRemoteStream(null); 
+      
+      // Dismantle the dead peer connection securely so a new one can be born when they return
+      if (peerRef.current) {
+         peerRef.current.close();
+         peerRef.current = null;
+      }
     });
 
     return () => {
