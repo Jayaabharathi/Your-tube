@@ -103,6 +103,15 @@ io.on("connection", (socket) => {
     io.to(to).emit("signal", { from, signal });
   });
 
+  socket.on("disconnecting", () => {
+    // If user abruptly closes the tab, notify their room so the other person's call automatically hangs up
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        socket.to(room).emit("user-left", socket.id);
+      }
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("🔌 User disconnected from VoIP");
   });
