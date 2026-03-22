@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Home, Compass, PlaySquare, User } from 'lucide-react';
+import { Home, Compass, PlaySquare, User, Video } from 'lucide-react';
 import { useUser } from '@/lib/AuthContext';
 import { useState } from 'react';
 import Channeldialogue from './channeldialogue';
@@ -22,6 +22,10 @@ const BottomNav = () => {
         <Link href="/subscriptions" className="flex flex-col items-center gap-1 text-muted-foreground w-16 hover:text-foreground">
           <PlaySquare className="w-5 h-5" />
           <span className="text-[10px]">Subs</span>
+        </Link>
+        <Link href="/videocall" className="flex flex-col items-center gap-1 text-red-500 w-16 hover:text-red-400 font-medium">
+          <Video className="w-5 h-5" />
+          <span className="text-[10px]">VoIP</span>
         </Link>
         
         {user?.channelname ? (
