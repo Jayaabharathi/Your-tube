@@ -133,38 +133,19 @@ const Page = () => {
             <div className="px-4 md:px-0 space-y-4 pt-4 md:pt-0">
               <VideoInfo video={video} />
 
-              {/* Upgrade Plans */}
-            {user && (!user.planType || user.planType !== "Gold") && (
+            {user && !user.isPremium && (
               <div className="bg-secondary/10 p-4 md:p-6 rounded-2xl mb-4 border border-border shadow-inner">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
-                        <h3 className="font-bold text-lg tracking-tight">Support this Creator</h3>
-                        <p className="text-xs text-muted-foreground">Unlock ad-free viewing & exclusive perks natively.</p>
+                        <h3 className="font-bold text-lg tracking-tight">Unlock Unlimited Downloads</h3>
+                        <p className="text-xs text-muted-foreground">Free users get 1 download per day. Upgrade to Premium for unlimited offline downloads.</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        {(!user.planType || user.planType === "Free") && (
                         <Button
-                            variant="ghost"
-                            onClick={() => handlePayment("Bronze", 10)}
-                            className="bg-[#CD7F32]/10 hover:bg-[#CD7F32] hover:text-white text-[#CD7F32] font-bold border border-[#CD7F32]/20 rounded-xl"
+                            onClick={() => handlePayment("Premium", 199)}
+                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg shadow-purple-600/20 px-6 py-5 text-sm"
                         >
-                            Bronze ₹10
-                        </Button>
-                        )}
-                        {(!user.planType || ["Free", "Bronze"].find(p => p === user.planType)) && (
-                        <Button
-                            variant="ghost"
-                            onClick={() => handlePayment("Silver", 50)}
-                            className="bg-slate-400/10 hover:bg-slate-400 hover:text-white text-slate-500 font-bold border border-slate-400/20 rounded-xl"
-                        >
-                            Silver ₹50
-                        </Button>
-                        )}
-                        <Button
-                            onClick={() => handlePayment("Gold", 100)}
-                            className="bg-yellow-500 hover:bg-yellow-600 text-yellow-950 font-bold rounded-xl shadow-lg shadow-yellow-500/20"
-                        >
-                            Gold ₹100
+                            Buy Premium ₹199
                         </Button>
                     </div>
                 </div>

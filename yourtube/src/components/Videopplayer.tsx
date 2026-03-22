@@ -30,17 +30,14 @@ export default function VideoPlayer({ video, onNextVideo }: VideoPlayerProps) {
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const videoElement = e.currentTarget;
     const currentTime = videoElement.currentTime;
-    const plan = user?.planType || "Free";
-
-    let limit = 5 * 60; // 5 mins Free
-    if (plan === "Bronze") limit = 7 * 60;
-    if (plan === "Silver") limit = 10 * 60;
-    if (plan === "Gold") limit = Infinity;
+    
+    // Free users get 5 minutes. Premium users get unlimited watch time.
+    const limit = user?.isPremium ? Infinity : 5 * 60;
 
     if (currentTime >= limit) {
       videoElement.pause();
       videoElement.currentTime = limit - 0.5; // Prevent auto-resume exploit
-      alert(`Your ${plan} plan allows watching up to ${limit / 60} minutes. Please upgrade your plan to continue watching!`);
+      alert(`Free accounts can only watch the first 5 minutes of a video. Please Upgrade to Premium for unlimited watch time and downloads!`);
     }
   };
 
