@@ -65,12 +65,12 @@ export default function VideoCall() {
       if (!pc || pc.connectionState === "closed") {
           pc = await initWebRTC();
           if (localStream) {
-             localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+             localStream.getTracks().forEach(t => pc?.addTrack(t, localStream));
           }
       }
 
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
+      const offer = await pc!.createOffer();
+      await pc!.setLocalDescription(offer);
       socket.emit("signal", { to: id, from: socket.id, signal: offer });
     });
 
@@ -176,6 +176,7 @@ export default function VideoCall() {
       }
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: {
+            facingMode: "user",
             width: { ideal: 1280, max: 1280 },
             height: { ideal: 720, max: 720 },
             frameRate: { ideal: 24, max: 30 }
@@ -183,7 +184,11 @@ export default function VideoCall() {
         audio: true 
       });
       setLocalStream(stream);
-      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+        // iOS Safari strictly requires imperative play execution for WebRTC blobs
+        localVideoRef.current.play().catch(e => console.error("Safari autoplay block:", e));
+      }
       
       const pc = await initWebRTC();
       stream.getTracks().forEach(track => pc.addTrack(track, stream));
