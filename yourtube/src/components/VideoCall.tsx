@@ -215,8 +215,9 @@ export default function VideoCall() {
       if (localVideoRef.current) localVideoRef.current.srcObject = screenStream;
       
       videoTrack.onended = () => stopScreenShare();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Screen share error:", err);
+      alert(`Screen share failed: ${err.message || err.name}.\n\nNote: Apple iOS and Android OS aggressively block websites from capturing the phone screen. Please demonstrate this feature on a Desktop/Laptop!`);
     }
   };
 
