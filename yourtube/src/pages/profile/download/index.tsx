@@ -27,9 +27,11 @@ const DownloadPage = () => {
             key={item._id}
             className="flex items-center gap-4 border p-3 rounded"
           >
-            <img
-              src={item.videoId?.filepath ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${item.videoId.filepath.replace(/\\/g, "/")}` : "/placeholder.svg?height=100&width=150"}
+            <video
+              src={item.videoId?.filepath ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${item.videoId.filepath.replace(/\\/g, "/")}` : ""}
               className="w-40 h-24 object-cover rounded bg-black"
+              preload="metadata"
+              controls
             />
             <div>
               <h3 className="font-semibold text-lg">
