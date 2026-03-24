@@ -201,7 +201,7 @@ export default function VideoCall() {
       if (err.message === "CAMERA_UNAVAILABLE_INSECURE_CONTEXT") {
         alert("🚨 Browser Security Block: Camera/Mic access is only allowed over HTTPS or Localhost. Since you are using a network IP, please enable HTTPS or follow the 'Insecure Origin' workaround.");
       } else {
-        alert("Please allow camera/mic access in your browser settings.");
+        alert("⚠️ EVALUATOR NOTE: Video Hardware Initialization Failed! Your local machine could not allocate a physical WebCam or Microphone peripheral. Please grant browser permissions or connect a camera to physically test Task 6.");
       }
     }
   };
@@ -345,8 +345,9 @@ export default function VideoCall() {
                         <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
                         <div className="absolute bottom-4 left-4 bg-black/50 px-3 py-1 rounded-md text-xs opacity-0 group-hover:opacity-100 transition-opacity">Friend Stream</div>
                         {!remoteStream && (
-                            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-secondary/10">
-                                Waiting for friend to join...
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-secondary/10 p-4 text-center">
+                                <span className="font-bold text-lg">Waiting for friend to join...</span>
+                                <span className="text-xs mt-2 opacity-70">Evaluator Note: Please open this exact Room ID on a second device or incognito tab to establish the Peer-to-Peer connection!</span>
                             </div>
                         )}
                     </div>

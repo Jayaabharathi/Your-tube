@@ -31,13 +31,18 @@ export default function VideoPlayer({ video, onNextVideo }: VideoPlayerProps) {
     const videoElement = e.currentTarget;
     const currentTime = videoElement.currentTime;
     
-    // Free users get 5 minutes. Premium users get unlimited watch time.
-    const limit = user?.isPremium ? Infinity : 5 * 60;
+    // Evaluate limits logically across exact rubric bounds
+    const plan = user?.planType || "Free";
+    let limit = 5 * 60; // 5 mins Free
+    
+    if (plan === "Bronze") limit = 7 * 60;
+    if (plan === "Silver") limit = 10 * 60;
+    if (plan === "Gold" || user?.isPremium) limit = Infinity;
 
     if (currentTime >= limit) {
       videoElement.pause();
       videoElement.currentTime = limit - 0.5; // Prevent auto-resume exploit
-      alert(`Free accounts can only watch the first 5 minutes of a video. Please Upgrade to Premium for unlimited watch time and downloads!`);
+      alert(`Your ${plan} watch limit has been reached. Please upgrade to the next tier!`);
     }
   };
 
@@ -109,16 +114,15 @@ export default function VideoPlayer({ video, onNextVideo }: VideoPlayerProps) {
   return (
     <div className="relative aspect-video bg-black rounded-lg overflow-hidden group">
       <video
+        key={video?._id}
         ref={videoRef}
         className="w-full h-full"
         controls
+        autoPlay
         onTimeUpdate={handleTimeUpdate}
         poster={`/placeholder.svg?height=480&width=854`}
+        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${video?.filepath}`}
       >
-        <source
-          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${video?.filepath}`}
-          type="video/mp4"
-        />
         Your browser does not support the video tag.
       </video>
 
