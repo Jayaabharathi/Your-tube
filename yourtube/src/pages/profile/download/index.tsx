@@ -28,14 +28,14 @@ const DownloadPage = () => {
             className="flex items-center gap-4 border p-3 rounded"
           >
             <img
-              src={item.videoId.thumbnail}
-              className="w-40 rounded"
+              src={item.videoId?.filepath ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${item.videoId.filepath.replace(/\\/g, "/")}` : "/placeholder.svg?height=100&width=150"}
+              className="w-40 h-24 object-cover rounded bg-black"
             />
             <div>
-              <h3 className="font-semibold">
-                {item.videoId.videotitle}
+              <h3 className="font-semibold text-lg">
+                {item.videoId?.videotitle || "Video processing or deleted"}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-muted-foreground mt-1">
                 Downloaded on{" "}
                 {new Date(item.createdAt).toLocaleDateString()}
               </p>
