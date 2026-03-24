@@ -81,9 +81,17 @@ export default function App({ Component, pageProps }: AppProps) {
       <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
         <title>Your-Tube Clone</title>
         
-        {/* Task 4 Regional Debug Overlay (Click to hide/show) */}
-        <div className="fixed bottom-4 left-4 z-[9999] bg-black/80 text-white text-[10px] p-2 rounded-lg border border-white/20 select-none pointer-events-none opacity-50 hover:opacity-100 transition-opacity">
-           Detect: {themeDebug.region || "???"} | {themeDebug.h}:00 IST | Theme: {themeDebug.isLight ? "LIGHT ⚪" : "DARK ⚫"}
+        {/* Task 4 Regional Debug Overlay (Click to Force Toggle) */}
+        <div 
+          onClick={() => {
+            document.documentElement.classList.toggle("dark");
+            setThemeDebug(prev => ({ ...prev, isLight: !prev.isLight }));
+          }}
+          className="fixed bottom-4 left-4 z-[9999] bg-black/90 text-white text-[10px] p-3 rounded-xl border border-white/20 cursor-pointer shadow-2xl hover:scale-105 transition-transform flex flex-col items-center gap-1"
+        >
+           <span className="font-mono">IP: {themeDebug.region || "Unknown"} | {themeDebug.h}:00 IST</span>
+           <span className="text-yellow-400 font-bold tracking-wider">Theme: {themeDebug.isLight ? "LIGHT ⚪" : "DARK ⚫"}</span>
+           <span className="text-[8px] opacity-60 mt-1 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">(Tap to Force Toggle Theme)</span>
         </div>
 
         <Header />
