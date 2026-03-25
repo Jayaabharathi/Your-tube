@@ -78,6 +78,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <UserProvider>
       <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
         <title>Your-Tube Clone</title>
+        
+        {/* Task 4 Regional Passive Telemetry */}
+        <div className="fixed bottom-4 left-4 z-[9999] bg-black/90 text-white text-[10px] p-3 rounded-xl border border-white/20 shadow-2xl flex flex-col items-center gap-1 pointer-events-none">
+           <span className="font-mono">IP: {themeDebug.region || "Unknown"} | {themeDebug.h}:00 IST</span>
+           <span className="text-yellow-400 font-bold tracking-wider">Theme: {themeDebug.isLight ? "LIGHT ⚪" : "DARK ⚫"}</span>
+           <span className="text-[8px] opacity-60 mt-1 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">Auto-Theming Active</span>
+        </div>
 
         <Header />
         <Script
